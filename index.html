@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Teaser Creator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f0f8ff; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        form, .preview-container { flex: 1 1 600px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+        textarea { height: 100px; resize: vertical; }
+        button { padding: 10px 15px; background-color: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        button:hover { background-color: #003d82; }
+        .job-teaser { border: 2px solid #0056b3; border-radius: 10px; overflow: hidden; background-color: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .job-header { background-color: #0056b3; color: white; padding: 15px; display: flex; align-items: center; }
+        .job-logo { width: 80px; height: 80px; object-fit: contain; margin-right: 15px; background-color: white; border-radius: 50%; padding: 5px; }
+        .job-title { margin: 0; font-size: 1.4em; }
+        .job-company-location { font-size: 0.9em; opacity: 0.9; }
+        .tab { display: flex; background-color: #f1f1f1; }
+        .tab button { flex-grow: 1; background-color: inherit; border: none; outline: none; cursor: pointer; padding: 10px 12px; transition: 0.3s; font-size: 14px; color: #333; }
+        .tab button:hover { background-color: #ddd; }
+        .tab button.active { background-color: white; border-bottom: 3px solid #0056b3; }
+        .tabcontent { display: none; padding: 20px; color: #333; }
+        .tabcontent.active { display: block; }
+        .apply-button { display: block; width: 100%; padding: 12px 0; background-color: #e4007e; color: white; text-align: center; text-decoration: none; font-weight: bold; }
+        .apply-button:hover { background-color: #c8006f; }
+        #preFillButton { background-color: #4CAF50; }
+        #preFillButton:hover { background-color: #45a049; }
+        #generateButton { display: block; width: 100%; margin-top: 20px; }
+        .teaser-card { padding: 20px; color: #333; }
+        .teaser-card h3 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="jobTeaserForm">
+            <h2>Create Job Teaser</h2>
+            <button type="button" id="preFillButton">Pre-fill with Sample Data</button>
+            
+            <label for="jobTitle">Job Title:</label>
+            <input type="text" id="jobTitle" name="jobTitle" required>
+
+            <label for="company">Company Name:</label>
+            <input type="text" id="company" name="company" required>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required>
+
+            <label for="logoUrl">Logo URL:</label>
+            <input type="url" id="logoUrl" name="logoUrl" required>
+
+            <label for="overview">Overview:</label>
+            <textarea id="overview" name="overview" required></textarea>
+
+            <label for="responsibilities">Responsibilities:</label>
+            <textarea id="responsibilities" name="responsibilities" required></textarea>
+
+            <label for="requirements">Requirements:</label>
+            <textarea id="requirements" name="requirements" required></textarea>
+
+            <label for="benefits">Benefits:</label>
+            <textarea id="benefits" name="benefits" required></textarea>
+
+            <label for="applyUrl">Apply URL:</label>
+            <input type="url" id="applyUrl" name="applyUrl" required>
+
+            <button type="submit" id="generateButton">Generate Teaser</button>
+        </form>
+
+        <div class="preview-container">
+            <h2>Teaser Preview</h2>
+            <div id="teaserCardPreview" class="job-teaser">
+                <div class="job-header">
+                    <img id="previewLogo" src="" alt="Company Logo" class="job-logo">
+                    <div>
+                        <h2 id="previewTitle" class="job-title"></h2>
+                        <div id="previewCompanyLocation" class="job-company-location"></div>
+                    </div>
+                </div>
+                <div class="teaser-card" id="teaserCardContent"></div>
+                <a id="previewApplyButton" href="#" class="apply-button" target="_blank">Apply Now</a>
+            </div>
+            <div id="teaserPreview"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 0;
+        const tabs = ['Overview', 'Responsibilities', 'Requirements', 'Benefits'];
+        let intervalId;
+
+        document.getElementById('jobTeaserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            updateTeaserCard(formData);
+            const teaserHTML = generateTeaserHTML(formData);
+            document.getElementById('teaserPreview').innerHTML = teaserHTML;
+            initTabs();
+        });
+
+        document.getElementById('preFillButton').addEventListener('click', function() {
+            document.getElementById('jobTitle').value = "Senior Software Engineer";
+            document.getElementById('company').value = "TechCorp Solutions";
+            document.getElementById('location').value = "San Francisco, CA";
+            document.getElementById('logoUrl').value = "https://via.placeholder.com/80";
+            document.getElementById('overview').value = "Join our dynamic team at TechCorp Solutions, where innovation meets opportunity. We're seeking a talented Senior Software Engineer to help drive our cutting-edge projects forward.";
+            document.getElementById('responsibilities').value = "- Lead development of complex software systems\n- Mentor junior developers\n- Collaborate with cross-functional teams\n- Implement best practices in code quality and architecture";
+            document.getElementById('requirements').value = "- 5+ years of experience in software development\n- Proficiency in Java, Python, or C++\n- Strong understanding of cloud technologies (AWS, Azure)\n- Excellent problem-solving and communication skills";
+            document.getElementById('benefits').value = "- Competitive salary and equity package\n- Comprehensive health, dental, and vision insurance\n- 401(k) with company match\n- Flexible work hours and remote work options\n- Continuous learning and development opportunities";
+            document.getElementById('applyUrl').value = "https://example.com/apply";
+        });
+
+        function updateTeaserCard(formData) {
+            document.getElementById('previewLogo').src = formData.get('logoUrl');
+            document.getElementById('previewTitle').textContent = formData.get('jobTitle');
+            document.getElementById('previewCompanyLocation').textContent = `${formData.get('company')} - ${formData.get('location')}`;
+            document.getElementById('previewApplyButton').href = formData.get('applyUrl');
+
+            const cardContent = `
+                <h3>Overview</h3>
+                <p>${formData.get('overview')}</p>
+                <h3>Responsibilities</h3>
+                <p>${formData.get('responsibilities').replace(/\n/g, '<br>')}</p>
+                <h3>Requirements</h3>
+                <p>${formData.get('requirements').replace(/\n/g, '<br>')}</p>
+                <h3>Benefits</h3>
+                <p>${formData.get('benefits').replace(/\n/g, '<br>')}</p>
+            `;
+            document.getElementById('teaserCardContent').innerHTML = cardContent;
+        }
+
+        function generateTeaserHTML(formData) {
+            return `
+                <div class="job-teaser">
+                    <div class="job-header">
+                        <img src="${formData.get('logoUrl')}" alt="${formData.get('company')} Logo" class="job-logo">
+                        <div>
+                            <h2 class="job-title">${formData.get('jobTitle')}</h2>
+                            <div class="job-company-location">${formData.get('company')} - ${formData.get('location')}</div>
+                        </div>
+                    </div>
+                    <div class="tab">
+                        <button class="tablinks active" onclick="openTab(event, 'Overview')">Overview</button>
+                        <button class="tablinks" onclick="openTab(event, 'Responsibilities')">Responsibilities</button>
+                        <button class="tablinks" onclick="openTab(event, 'Requirements')">Requirements</button>
+                        <button class="tablinks" onclick="openTab(event, 'Benefits')">Benefits</button>
+                    </div>
+                    <div id="Overview" class="tabcontent active">
+                        <p>${formData.get('overview')}</p>
+                    </div>
+                    <div id="Responsibilities" class="tabcontent">
+                        <p>${formData.get('responsibilities').replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div id="Requirements" class="tabcontent">
+                        <p>${formData.get('requirements').replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div id="Benefits" class="tabcontent">
+                        <p>${formData.get('benefits').replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <a href="${formData.get('applyUrl')}" class="apply-button" target="_blank">Apply Now</a>
+                </div>
+            `;
+        }
+
+        function openTab(evt, tabName) {
+            const tabcontent = document.getElementsByClassName("tabcontent");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            const tablinks = document.getElementsByClassName("tablinks");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function initTabs() {
+            const tabElements = document.querySelectorAll(".tablinks");
+            let currentTabIndex = 0;
+
+            function rotateTab() {
+                tabElements[currentTabIndex].classList.remove("active");
+                currentTabIndex = (currentTabIndex + 1) % tabElements.length;
+                tabElements[currentTabIndex].click();
+            }
+
+            setInterval(rotateTab, 2000);
+        }
+    </script>
+</body>
+</html>
