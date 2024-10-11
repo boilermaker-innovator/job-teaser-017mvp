@@ -3,70 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boilermaker Job Teaser Creator</title>
+    <title>ELS - Exclusive Labour Services Job Teaser Creator</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; }
         .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #0056b3; }
+        h1 { color: #0056b3; margin-bottom: 0; }
+        h2 { color: #0056b3; margin-top: 5px; }
         label { display: block; margin-top: 15px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+        input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
         textarea { height: 100px; resize: vertical; }
-        button { padding: 10px 15px; background-color: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px; }
-        button:hover { background-color: #003d82; }
+        .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
+        button { padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        #prefillButton { background-color: #4CAF50; margin-top: 10px; }
+        #generateButton { background-color: #0099ff; }
+        #clearFormButton { background-color: #f44336; }
+        #previewSection { margin-top: 40px; border-top: 2px solid #0099ff; padding-top: 20px; }
+        .preview-cards { display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .preview-teaser, .full-details-card { border: 2px solid #0099ff; border-radius: 8px; overflow: hidden; width: 48%; margin-bottom: 20px; }
+        .preview-header { background-color: #0099ff; color: white; padding: 15px; display: flex; align-items: center; }
+        .preview-logo { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; background-color: white; border-radius: 8px; }
+        .preview-title { margin: 0; font-size: 1.2em; }
+        .preview-company-location { font-size: 0.9em; }
+        .preview-content { padding: 15px; }
+        .preview-tabs { display: flex; background-color: #f0f0f0; }
+        .preview-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; }
+        .preview-tab.active { background-color: white; font-weight: bold; }
+        .preview-tab-content { padding: 15px; display: none; }
+        .preview-tab-content.active { display: block; }
+        .preview-button { display: block; width: calc(100% - 30px); margin: 15px; padding: 10px 0; background-color: #0099ff; color: white; text-align: center; text-decoration: none; font-weight: bold; border-radius: 4px; }
+        #debugInfo { margin-top: 20px; padding: 10px; background-color: #f0f0f0; border-radius: 4px; }
+        #prefillOptions { margin-bottom: 20px; display: flex; flex-direction: column; }
+        #prefillSelect { margin-bottom: 10px; }
+        .full-details-content { padding: 15px; }
+        .full-details-content h4 { margin-top: 10px; margin-bottom: 5px; }
+        #logoPreview { width: 100px; height: 100px; border: 2px dashed #ccc; display: flex; justify-content: center; align-items: center; margin-top: 10px; }
+        #logoPreview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        @media (max-width: 768px) {
+            .preview-teaser, .full-details-card { width: 100%; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Boilermaker Job Teaser Creator</h1>
+        <h1>ELS - Exclusive Labour Services</h1>
+        <h2>Job Teaser Creator</h2>
+        <div id="prefillOptions">
+            <select id="prefillSelect">
+                <option value="">Select a template</option>
+                <option value="boilermaker">Boilermaker</option>
+                <option value="welder">Welder</option>
+                <option value="mechanic">Mechanic</option>
+            </select>
+            <button id="prefillButton">Pre-fill Form</button>
+        </div>
         <form id="jobTeaserForm">
             <label for="jobTitle">Job Title:</label>
-            <input type="text" id="jobTitle" name="jobTitle" value="Boilermaker" required>
+            <input type="text" id="jobTitle" name="jobTitle" required>
 
             <label for="company">Company Name:</label>
-            <input type="text" id="company" name="company" value="Exclusive Labour Services" required>
+            <input type="text" id="company" name="company" value="ELS - Exclusive Labour Services" required>
 
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location" value="Welshpool, WA" required>
+            <input type="text" id="location" name="location" value="Welshpool" required>
 
             <label for="logoUrl">Logo URL:</label>
-            <input type="url" id="logoUrl" name="logoUrl" value="https://i.ibb.co/4s0GW9g/IMG-1259.jpg" required>
+            <input type="url" id="logoUrl" name="logoUrl" required>
+            <div id="logoPreview">
+                <img src="" alt="Logo Preview" id="logoPreviewImg">
+            </div>
 
-            <label for="overview">Overview:</label>
-            <textarea id="overview" name="overview" required>Looking for Perth-based work? Boilermaker required to Start ASAP in Welshpool. Exclusive Labour Services is a proactive supplier of managed labour requirements and staffing solutions. Our business is built around relationships and understanding the needs of both our Clients and our Candidates.</textarea>
+            <label for="about">About:</label>
+            <textarea id="about" name="about" required></textarea>
 
-            <label for="responsibilities">Responsibilities:</label>
-            <textarea id="responsibilities" name="responsibilities" required>- Fabricate and repair a variety of MEM plant/equipment within a workshop environment
-- Read and interpret drawings
-- Work as part of a team
-- Maintain a safety-minded approach to work</textarea>
+            <label for="role">Role:</label>
+            <textarea id="role" name="role" required></textarea>
 
-            <label for="requirements">Requirements:</label>
-            <textarea id="requirements" name="requirements" required>- Relevant Trade Certificate
-- Proficiency with various welding techniques (e.g. FCAW, MIG, etc.)
-- Valid Drivers Licence
-- Own Transport
-- Pre-employment Medicals, including Lab DAS
-- Good work ethics and positive attitude</textarea>
+            <label for="requirements">You:</label>
+            <textarea id="requirements" name="requirements" required></textarea>
 
             <label for="benefits">Benefits:</label>
-            <textarea id="benefits" name="benefits" required>- Location: Welshpool, WA
-- Hours: Monday - Friday, 8-10 hrs per day
-- Duration: Ongoing work - Temp to Perm opportunity
-- Opportunity to join a busy engineering workshop</textarea>
+            <textarea id="benefits" name="benefits" required></textarea>
 
             <label for="applyUrl">Apply URL:</label>
-            <input type="url" id="applyUrl" name="applyUrl" value="https://www.adzuna.com.au/details/4883876275?title=Boilermaker" required>
+            <input type="url" id="applyUrl" name="applyUrl" required>
 
-            <button type="submit">Generate Teaser</button>
+            <div class="button-group">
+                <button type="submit" id="generateButton">Generate Teaser</button>
+                <button type="button" id="clearFormButton">Clear Form</button>
+            </div>
         </form>
-    </div>
 
-    <script>
-        document.getElementById('jobTeaserForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Form submitted! In a full application, this would generate the job teaser.');
-            // Here you would typically send the form data to a server or process it client-side
-        });
-    </script>
+        <div id="previewSection" style="display:none;">
+            <h2>Preview</h2>
+            <div class="preview-cards">
+                <div id="previewTeaser" class="preview-teaser">
+                    <div class="preview-header">
+                        <img id="previewLogo" src="" alt="Company Logo" class="preview-logo">
+                        <div>
+                            <h3 id="previewTitle" class="preview-title"></h3>
+                            <div id="previewCompanyLocation" class="preview-company-location"></div>
+                        </div>
+                    </div>
+                    <div class="preview-tabs">
+                        <div class="preview-tab active" data-tab="about">About</div>
+                        <div class="preview-tab" data-tab="role">Role</div>
+                        <div class="preview-tab" data-tab="you">You</div>
+                        <div class="preview-tab" data-tab="benefits">Benefits</div>
+                    </div>
+                    <div class="preview-tab-content active" id="aboutContent"></div>
+                    <div class="preview-tab-content" id="roleContent"></div>
+                    <div class="preview-tab-content" id="youContent"></div>
+                    <div class="preview-tab-content" id="benefitsContent"></div>
+                    <a id="previewApply" href="#" class="preview-button">Learn More</a>
+                </div>
+                <div id="fullDetailsCard" class="full-details-card">
+                    <div class="preview-header">
+                        <img id="fullDetailsLogo" src="" alt="Company Logo" class="preview-logo">
+                        <div>
+                            <h3 id="fullDetailsTitle" class="preview-title"></h3>
+                            <div id="fullDetailsCompanyLocation" class="preview-company-location"></div>
+                        </div>
+                    </div>
+                    <div class="full-details-content">
+                        <h4>About</h4>
+                        <p id="fullDetailsAbout"></p>
+                        <h4>Role</h4>
+                        <p id="fullDetailsRole"></p>
+                        <h4>Requirements</h4>
+                        <p id="fullDetailsRequirements"></p>
+                        <h4>Benefits</h4>
+                        <p id="fullDetailsBenefits"></p>
+                    </div>
+                    <a id="fullDetailsApply" href="#" class="preview-button">Apply Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="debugInfo">
+            <h3>Debug Information:</h3>
+            <p>No data saved yet</p>
+        </div>
+    </div>
 </body>
 </html>
+<script>
+    const jobData = {
+        boilermaker: {
+            jobTitle: "Boilermaker",
+            company: "ELS - Exclusive Labour Services",
+            location: "Welshpool",
+            logoUrl: "https://i.ibb.co/4s0GW9g/IMG-1259.jpg",
+            about: "Join our dynamic team at ELS, where innovation meets opportunity in boilermaking.",
+            role: "- Fabricate and repair metal structures\n- Read and interpret technical drawings\n- Ensure safety standards are met",
+            requirements: "- Certified Boilermaker\n- 3+ years of experience\n- Strong problem-solving skills",
+            benefits: "- Competitive salary\n- Health and dental insurance\n- Professional development opportunities",
+            applyUrl: "https://example.com/apply-boilermaker"
+        },
+        welder: {
+            jobTitle: "Welder",
+            company: "ELS - Exclusive Labour Services",
+            location: "Welshpool",
+            logoUrl: "https://i.ibb.co/4s0GW9g/IMG-1259.jpg",
+            about: "ELS is seeking skilled welders to join our growing team in Welshpool.",
+            role: "- Perform various welding techniques\n- Read and interpret blueprints\n- Maintain welding equipment",
+            requirements: "- Certified Welder\n- 2+ years of experience\n- Attention to detail",
+            benefits: "- Competitive hourly rate\n- Overtime opportunities\n- Safety equipment provided",
+            applyUrl: "https://example.com/apply-welder"
+        },
+        mechanic: {
+            jobTitle: "Mechanic",
+            company: "ELS - Exclusive Labour Services",
+            location: "Welshpool",
+            logoUrl: "https://i.ibb.co/4s0GW9g/IMG-1259.jpg",
+            about: "ELS is looking for experienced mechanics to join our maintenance team in Welshpool.",
+            role: "- Diagnose and repair equipment\n- Perform preventive maintenance\n- Document all maintenance activities",
+            requirements: "- Certified Mechanic\n- 5+ years of experience\n- Strong analytical skills",
+            benefits: "- Full benefits package\n- 401(k) with company match\n- Ongoing training opportunities",
+            applyUrl: "https://example.com/apply-mechanic"
+        }
+    };
+
+    const form = document.getElementById('jobTeaserForm');
+    const previewSection = document.getElementById('previewSection');
+    const prefillButton = document.getElementById('prefillButton');
+    const generateButton = document.getElementById('generateButton');
+    const clearFormButton = document.getElementById('clearFormButton');
+    const prefillSelect = document.getElementById('prefillSelect');
+    const logoUrlInput = document.getElementById('logoUrl');
+    const logoPreviewImg = document.getElementById('logoPreviewImg');
+
+    function updatePreview() {
+        const jobTitle = document.getElementById('jobTitle').value;
+        const company = document.getElementById('company').value;
+        const location = document.getElementById('location').value;
+        const logoUrl = document.getElementById('logoUrl').value;
+        const about = document.getElementById('about').value;
+        const role = document.getElementById('role').value;
+        const requirements = document.getElementById('requirements').value;
+        const benefits = document.getElementById('benefits').value;
+        const applyUrl = document.getElementById('applyUrl').value;
+
+        // Update rotating card
+        document.getElementById('previewTitle').textContent = jobTitle;
+        document.getElementById('previewCompanyLocation').textContent = `${company} - ${location}`;
+        document.getElementById('previewLogo').src = logoUrl;
+        document.getElementById('aboutContent').textContent = about;
+        document.getElementById('roleContent').textContent = role;
+        document.getElementById('youContent').textContent = requirements;
+        document.getElementById('benefitsContent').textContent = benefits;
+        document.getElementById('previewApply').href = applyUrl;
+
+        // Update full details card
+        document.getElementById('fullDetailsTitle').textContent = jobTitle;
+        document.getElementById('fullDetailsCompanyLocation').textContent = `${company} - ${location}`;
+        document.getElementById('fullDetailsLogo').src = logoUrl;
+        document.getElementById('fullDetailsAbout').textContent = about;
+        document.getElementById('fullDetailsRole').textContent = role;
+        document.getElementById('fullDetailsRequirements').textContent = requirements;
+        document.getElementById('fullDetailsBenefits').textContent = benefits;
+        document.getElementById('fullDetailsApply').href = applyUrl;
+    }
+
+    prefillButton.addEventListener('click', function() {
+        const selectedJob = prefillSelect.value;
+        if (selectedJob && jobData[selectedJob]) {
+            const data = jobData[selectedJob];
+            for (const [key, value] of Object.entries(data)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = value;
+                }
+            }
+            logoPreviewImg.src = data.logoUrl;
+            updatePreview();
+            previewSection.style.display = 'block';
+        }
+    });
+
+    generateButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        updatePreview();
+        previewSection.style.display = 'block';
+        document.getElementById('debugInfo').innerHTML = '<h3>Debug Information:</h3><p>Teaser generated successfully</p>';
+    });
+
+    clearFormButton.addEventListener('click', function() {
+        form.reset();
+        prefillSelect.value = '';
+        logoPreviewImg.src = '';
+        previewSection.style.display = 'none';
+        document.getElementById('debugInfo').innerHTML = '<h3>Debug Information:</h3><p>Form cleared</p>';
+    });
+
+    logoUrlInput.addEventListener('input', function() {
+        logoPreviewImg.src = this.value;
+    });
+
+    // Auto-rotate tabs
+    let currentTab = 0;
+    const tabs = document.querySelectorAll('.preview-tab');
+    const tabContents = document.querySelectorAll('.preview-tab-content');
+
+    function rotateTab() {
+        tabs[currentTab].classList.remove('active');
+        tabContents[currentTab].classList.remove('active');
+        currentTab = (currentTab + 1) % tabs.length;
+        tabs[currentTab].classList.add('active');
+        tabContents[currentTab].classList.add('active');
+    }
+
+    setInterval(rotateTab, 3000); // Rotate every 3 seconds
+</script>
