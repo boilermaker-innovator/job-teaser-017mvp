@@ -18,7 +18,94 @@
     <meta name="linkedin:image" content="https://i.ibb.co/4s0GW9g/IMG-1259.jpg" id="linkedinImage">
     
     <style>
-        /* Your existing styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #prefillButton {
+            background-color: #4CAF50;
+            margin-top: 10px;
+        }
+        #generateButton {
+            background-color: #0099ff;
+        }
+        #clearFormButton {
+            background-color: #f44336;
+        }
+        #logoPreview {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #logoPreview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -139,26 +226,6 @@
         const benefits = document.getElementById('benefits').value;
         const applyUrl = document.getElementById('applyUrl').value;
 
-        // Update rotating card
-        document.getElementById('previewTitle').textContent = jobTitle;
-        document.getElementById('previewCompanyLocation').textContent = `${company} - ${location}`;
-        document.getElementById('previewLogo').src = logoUrl;
-        document.getElementById('aboutContent').textContent = about;
-        document.getElementById('roleContent').textContent = role;
-        document.getElementById('youContent').textContent = requirements;
-        document.getElementById('benefitsContent').textContent = benefits;
-        document.getElementById('previewApply').href = applyUrl;
-
-        // Update full details card
-        document.getElementById('fullDetailsTitle').textContent = jobTitle;
-        document.getElementById('fullDetailsCompanyLocation').textContent = `${company} - ${location}`;
-        document.getElementById('fullDetailsLogo').src = logoUrl;
-        document.getElementById('fullDetailsAbout').textContent = about;
-        document.getElementById('fullDetailsRole').textContent = role;
-        document.getElementById('fullDetailsRequirements').textContent = requirements;
-        document.getElementById('fullDetailsBenefits').textContent = benefits;
-        document.getElementById('fullDetailsApply').href = applyUrl;
-
         // Update Open Graph and LinkedIn meta tags
         document.getElementById('ogTitle').setAttribute('content', `Job Teaser: ${jobTitle}`);
         document.getElementById('ogDescription').setAttribute('content', `Exciting job opportunity at ${company} in ${location}`);
@@ -168,6 +235,9 @@
         document.getElementById('linkedinTitle').setAttribute('content', `Job Teaser: ${jobTitle}`);
         document.getElementById('linkedinDescription').setAttribute('content', `Exciting job opportunity at ${company} in ${location}`);
         document.getElementById('linkedinImage').setAttribute('content', logoUrl);
+
+        // Update preview section (assuming you have a preview section in your HTML)
+        // Add code here to update your preview section
     }
 
     prefillButton.addEventListener('click', function() {
@@ -205,18 +275,9 @@
         logoPreviewImg.src = this.value;
     });
 
-    // Auto-rotate tabs
-    let currentTab = 0;
-    const tabs = document.querySelectorAll('.preview-tab');
-    const tabContents = document.querySelectorAll('.preview-tab-content');
-
-    function rotateTab() {
-        tabs[currentTab].classList.remove('active');
-        tabContents[currentTab].classList.remove('active');
-        currentTab = (currentTab + 1) % tabs.length;
-        tabs[currentTab].classList.add('active');
-        tabContents[currentTab].classList.add('active');
-    }
-
-    setInterval(rotateTab, 3000); // Rotate every 3 seconds
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial logo preview
+        logoPreviewImg.src = logoUrlInput.value;
+    });
 </script>
